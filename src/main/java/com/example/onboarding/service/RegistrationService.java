@@ -1,6 +1,6 @@
 package com.example.onboarding.service;
 
-import com.example.onboarding.controller.RegistrationResponse;
+import com.example.onboarding.dto.RegistrationDto;
 import com.example.onboarding.dto.CustomerDto;
 import com.example.onboarding.exception.CountryRestrictionException;
 import com.example.onboarding.exception.UnderageException;
@@ -27,13 +27,12 @@ public class RegistrationService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    // Constructor injection for dependencies
     public RegistrationService(CustomerRepository customerRepository, AccountRepository accountRepository) {
         this.customerRepository = customerRepository;
         this.accountRepository = accountRepository;
     }
 
-    public RegistrationResponse registerCustomer(CustomerDto registrationDto) throws UsernameExistsException, CountryRestrictionException, UnderageException {
+    public RegistrationDto registerCustomer(CustomerDto registrationDto) throws UsernameExistsException, CountryRestrictionException, UnderageException {
         validateCustomerData(registrationDto);
 
         // Create a new customer from the DTO
@@ -45,7 +44,7 @@ public class RegistrationService {
         Account newAccount = mapDtoToAccount(newCustomer.getId());
         accountRepository.save(newAccount);
 
-        return new RegistrationResponse(newCustomer.getUsername(), randomPassword);
+        return new RegistrationDto(newCustomer.getUsername(), randomPassword);
     }
 
     private Account mapDtoToAccount(Long custometId) {
@@ -78,7 +77,6 @@ public class RegistrationService {
             throw new UnderageException("Customer must be at least 18 years old.");
         }
         validateRegistrationData(customerDto);
-
     }
 
     private Customer mapDtoToCustomer(CustomerDto customerDto, String randomPassword) {
