@@ -32,7 +32,8 @@ public class RegistrationService {
         this.accountRepository = accountRepository;
     }
 
-    public RegistrationDto registerCustomer(CustomerDto registrationDto) throws UsernameExistsException, CountryRestrictionException, UnderageException {
+    public RegistrationDto registerCustomer(CustomerDto registrationDto)
+            throws UsernameExistsException, CountryRestrictionException, UnderageException {
         validateCustomerData(registrationDto);
 
         // Create a new customer from the DTO
@@ -76,7 +77,10 @@ public class RegistrationService {
         if (18 > Period.between(dateOfBirth, LocalDate.now()).getYears()) {
             throw new UnderageException("Customer must be at least 18 years old.");
         }
-        validateRegistrationData(customerDto);
+
+        if (customerDto.getUsername() == null || customerDto.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username is required and cannot be empty");
+        }
     }
 
     private Customer mapDtoToCustomer(CustomerDto customerDto, String randomPassword) {
@@ -86,21 +90,13 @@ public class RegistrationService {
         customer.setDateOfBirth(customerDto.getDateOfBirth());
         customer.setIdDocument(customerDto.getIdDocument());
         customer.setUsername(customerDto.getUsername());
-        // Handling IBAN and password generation internally within the entity or here
-        customer.setPassword(generatePassword(randomPassword)); // Stub for password generation
+        customer.setPassword(generatePassword(randomPassword)); // Hash the password before saving
 
         return customer;
     }
 
     private String generatePassword(String generatedPassword) {
         return passwordEncoder.encode(generatedPassword);
-    }
-    private void validateRegistrationData(CustomerDto customerDto) {
-        // Validate all required fields are present and valid
-        if (customerDto.getUsername() == null || customerDto.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Username is required and cannot be empty");
-        }
-        // Additional validations can be added here
     }
 
     // Method to validate if the country is allowed, Can be added to DB and modify it , Requirement says not possible

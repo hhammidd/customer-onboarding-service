@@ -38,22 +38,6 @@ public class AuthenticationController {
         }
     }
 
-    //    @PostMapping("/logon")
-    //    @Operation(summary = "Log in using a token",
-    //            description = "Verifies the provided token's validity and returns a success message if valid.",
-    //            responses = {
-    //                    @ApiResponse(responseCode = "200", description = "Token verification successful"),
-    //                    @ApiResponse(responseCode = "401", description = "Invalid token")
-    //            })
-    //    public ResponseEntity<String> logon(@RequestHeader("Authorization") String token) {
-    //        boolean isValid = authenticationService.verifyToken(token);
-    //        if (isValid) {
-    //            return ResponseEntity.ok("User successfully authenticated.");
-    //        } else {
-    //            return ResponseEntity.status(401).body("Invalid token");
-    //        }
-    //    }
-
     @PostMapping("/logon")
     @Operation(summary = "Log in using a token",
             description = "Verifies the provided token's validity and returns a success message if valid.",
@@ -76,11 +60,5 @@ public class AuthenticationController {
         } catch (Exception e) {
             return ResponseEntity.status(401).body("Invalid token");
         }
-    }
-
-    // Placeholder for actual authentication logic
-    private boolean authenticate(String username, String password) {
-        // Implement authentication logic here
-        return "admin".equals(username) && "password".equals(password);
     }
 }

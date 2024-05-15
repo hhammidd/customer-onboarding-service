@@ -6,12 +6,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-
+@Component
 public class JwtUtil {
 
     @Value("${jwt.secret}")
@@ -40,21 +41,6 @@ public class JwtUtil {
                 .parseClaimsJws(token);
     }
 
-    // Extract username from the token
-    public static String extractUsername(String token) {
-        return parseToken(token).getBody().getSubject();
-    }
-
-    // Check if the token has expired
-    public static boolean isTokenExpired(String token) {
-        return parseToken(token).getBody().getExpiration().before(new Date());
-    }
-
-    // Validate the token
-//    public static boolean validateToken(String token, String username) {
-//        final String tokenUsername = extractUsername(token);
-//        return (username.equals(tokenUsername) && !isTokenExpired(token));
-//    }
     public static boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parserBuilder()
